@@ -17,7 +17,7 @@ class m220528_131041_create_product_table extends Migration
             'author_id' => $this->integer()->notNull(),
             'product_category_id' => $this->integer()->notNull(),
             'name' => $this->string()->notNull(),
-            'qty' => $this->tinyInteger()->notNull()->defaultValue(1),
+            'qty' => $this->integer()->notNull()->defaultValue(1),
             'price' => $this->bigInteger()->notNull(),
             'created_at' =>  $this->dateTime()->notNull(),
             'updated_at' =>  $this->dateTime()->notNull()

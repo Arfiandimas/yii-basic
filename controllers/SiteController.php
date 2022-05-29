@@ -9,6 +9,10 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Product;
+use app\models\Author;
+use app\models\ProductCategory;
+use yii\helpers\ArrayHelper;
 
 class SiteController extends Controller
 {
@@ -61,7 +65,59 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $data = Product::find()
+        ->all();
+        return $this->render('home', compact('data'));
+    }
+
+    public function actionCreate()
+    {
+        $product_category = ArrayHelper::map(ProductCategory::find()->asArray()->all(),'id','name');
+        $product = new Product();
+
+        $formData = Yii::$app->request->post();
+        if ($product->load($formData)) {
+            if ($product->save()) {
+                Yii::$app->getSession()->setFlash('message', 'Product added....');
+                return $this->redirect(['index']);
+            } else {
+                Yii::$app->getSession()->setFlash('message', 'Failed add product....');
+            }
+        }
+
+        return $this->render('product/create', compact('product_category', 'product'));
+    }
+
+    public function actionView($id)
+    {
+        $data = Product::find()
+        ->where(['id' => $id])
+        ->one();
+        return $this->render('product/view', compact('data'));
+    }
+
+    public function actionUpdate($id)
+    {
+        $product_category = ArrayHelper::map(ProductCategory::find()->asArray()->all(),'id','name');
+        $product = Product::find()
+        ->where(['id' => $id])
+        ->one();
+
+        if ($product->load(Yii::$app->request->post()) && $product->save()) {
+            Yii::$app->getSession()->setFlash('message', 'Product updated....');
+            return $this->redirect(['index', 'id'=>$product->id]);
+        } else {
+            return $this->render('product/update', compact('product_category', 'product'));
+        }
+    }
+
+    public function actionDelete($id)
+    {
+        $data = Product::findOne($id)->delete();
+        if ($data) {
+            Yii::$app->getSession()->setFlash('message', 'Product deleted....');
+            return $this->redirect(['index']);
+        }
     }
 
     /**
