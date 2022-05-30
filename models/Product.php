@@ -9,14 +9,6 @@ class Product extends ActiveRecord
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 1;
 
-    private $author_id;
-    private $product_category_id;
-    private $name;
-    private $qty;
-    private $price;
-    private $created_at;
-    private $updated_at;
-
     /**
      * @return string the name of the table associated with this ActiveRecord class.
      */
